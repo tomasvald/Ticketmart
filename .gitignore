@@ -1,0 +1,11 @@
+build/
+bin/
+tmp/
+.settings/
+.gradle/
+.project
+*.jar
+*.war
+*.tmp
+*.bak
+*.swp
