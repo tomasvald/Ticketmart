@@ -14,25 +14,28 @@ ext {
 	springVersion = '5.1.2.RELEASE'
 	springDataVersion = '2.0.11.RELEASE'
 	springAmqpVersion = '2.1.0.RELEASE'
-	springSecurityVersion = '5.0.2.BUILD-SNAPSHOT'
+	springSecurityVersion = '5.1.2.RELEASE'
 	springBatchVersion = '4.0.0.RELEASE'
 	springIntegrationVersion = '5.0.2.BUILD-SNAPSHOT'
 	
 	//jersey
-	jerseyVersion = '2.30'
+	jerseyVersion  = '2.30'
 	
 	//miscellaneous	
-	jaxrsVersion  = '2.0.1'
+	javaxVersion   = '1.3.2'
+	jaxrsVersion   = '2.0.1'
 	servletVersion = '3.0.1'
+	jstlVersion    = '1.2'
+	jacksonVersion = '2.12.1'
 
 	//logging libs
-	log4jVersion = '1.2.17'
-	slf4jVersion = '1.7.25'
+	log4jVersion   = '1.2.17'
+	slf4jVersion   = '1.7.25'
 	logbackVersion = '1.2.3'
 	
 	//databases
-	mysqlVersion = '5.1.47'
-	h2Version = '1.4.194'
+	mysqlVersion   = '5.1.47'
+	h2Version      = '1.4.194'
 
 	//persistency libraries
 	hibernateVersion = '5.2.10.Final'
@@ -41,7 +44,7 @@ ext {
 	atomikosVersion = '4.0.4'
 
 	//testing libs
-	junit5Version = '5.3.1'
+	junitVersion = '4.12'
 
 	spring = [
 			context           : "org.springframework:spring-context:$springVersion",
@@ -78,7 +81,10 @@ ext {
 	]
 	
 	misc = [
-			servlet    : "javax.servlet:javax.servlet-api:$servletVersion"
+			javax      : "javax.annotation:javax.annotation-api:$javaxVersion",
+			servlet    : "javax.servlet:javax.servlet-api:$servletVersion",
+			jstl       : "javax.servlet:jstl:$jstlVersion", // to allow use of JSTL tags in JSP files
+			jacksonDb  : "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion" // for JSON HTTP responses
 	]
 
 	hibernate = [
@@ -103,17 +109,21 @@ ext {
 			mysql : "mysql:mysql-connector-java:$mysqlVersion",
 			h2    : "com.h2database:h2:$h2Version",
 	]
+	
+	testing = [
+			junit : "junit:junit:$junitVersion"
+	]
 }
 
 dependencies {
 	compile spring.context, spring.jdbc,
 			spring.orm, hibernate.em,
-			jersey.servlet, jersey.server, jersey.hk2,
+			spring.webmvc,
 			log.log4j,
-			misc.servlet,
-			db.mysql, db.h2,
-			'javax.annotation:javax.annotation-api:1.3.2'
-	testCompile 'junit:junit:4.12'
+			misc.javax, misc.servlet, misc.jstl, misc.jacksonDb,
+			jersey.servlet, jersey.server, jersey.hk2,
+			db.mysql, db.h2
+	testCompile testing.junit
 }
 
 tasks.withType(JavaCompile) {

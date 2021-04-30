@@ -23,11 +23,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @PropertySource("classpath:db/jdbc.properties")
-@ComponentScan(basePackages = "com.ticketmart.db")
+@ComponentScan(basePackages = "com.ticketmart.service")
 @EnableTransactionManagement
-public class DbConfig {
+public class DataServiceConfig {
 	
-	private static Logger logger = Logger.getLogger(DbConfig.class);
+	private static Logger logger = Logger.getLogger(DataServiceConfig.class);
 	
 	@Value("${driverClassName}")
 	private String driverClassName;

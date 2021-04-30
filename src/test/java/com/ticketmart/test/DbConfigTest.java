@@ -2,7 +2,6 @@ package com.ticketmart.test;
 
 import static org.junit.Assert.*;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -12,38 +11,39 @@ import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
-import com.ticketmart.config.DbConfig;
-import com.ticketmart.dao.DbOperationsDao;
+import com.ticketmart.config.DataServiceConfig;
 import com.ticketmart.entities.Event;
-import com.ticketmart.entities.Participant;
 import com.ticketmart.entities.Section;
 import com.ticketmart.entities.Ticket;
+import com.ticketmart.service.DataService;
 
 public class DbConfigTest {
 	
 	private static Logger logger = Logger.getLogger(DbConfigTest.class);
 	
 	GenericApplicationContext ctx;
-	DbOperationsDao dbOperations;
+	DataService dataService;
 	
 	@Before
 	public void setUp() {
-		ctx = new AnnotationConfigApplicationContext(DbConfig.class);
-		dbOperations = ctx.getBean("dbOperations", DbOperationsDao.class);
-		assertNotNull(dbOperations);
+		ctx = new AnnotationConfigApplicationContext(DataServiceConfig.class);
+		dataService = ctx.getBean("dataService", DataService.class);
+		assertNotNull(dataService);
 	}
 	
 	@Test
+	// List all events
 	public void test1() {
-		List<Event> events = dbOperations.getEvents();
+		List<Event> events = dataService.getEvents();
 		for(Event event : events) {
 			logger.info(event.toString());
 		}
 	}
 	
 	@Test
+	// Show information of a specific event
 	public void test2() {
-		Event event = dbOperations.getEventWithSections(2);
+		Event event = dataService.getEvent(2);
 		logger.info(event.toString());
 		if(event.getVenue() != null) {
 			logger.info(event.getVenue().toString());
@@ -55,13 +55,12 @@ public class DbConfigTest {
 		}
 	}
 	
-	// List available tickets for a section
+	// List all tickets for a section
 	@Test
 	public void test3() {
-		Section section = dbOperations.getSectionWithTickets(3);
-		logger.info(section.toString());
-		if(section.getTickets() != null) {
-			for(Ticket ticket : section.getTickets()) {
+		List<Ticket> tickets = dataService.getTickets(3);
+		if(tickets != null) {
+			for(Ticket ticket : tickets) {
 				logger.info(ticket.toString());
 			}
 		}
@@ -71,7 +70,7 @@ public class DbConfigTest {
 	// to verify the tickets were reserved
 	@Test
 	public void test4() {
-		List<Ticket> reserved = dbOperations.getAvailableTickets(3, 2);
+		List<Ticket> reserved = dataService.getTicketsAvailable(3, 2);
 		logger.info("Reserved tickets");
 		if(reserved.size() > 0) {
 			for(Ticket ticket : reserved) {
@@ -79,10 +78,10 @@ public class DbConfigTest {
 			}
 		}
 		
-		Section section = dbOperations.getSectionWithTickets(3);
-		logger.info(section.toString());
-		if(section.getTickets() != null) {
-			for(Ticket ticket : section.getTickets()) {
+		List<Ticket> tickets = dataService.getTickets(3);
+		logger.info(dataService.getSection(3));
+		if(tickets != null) {
+			for(Ticket ticket : tickets) {
 				logger.info(ticket.toString());
 			}
 		}

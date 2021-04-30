@@ -6,14 +6,16 @@ import java.util.Set;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.ticketmart.views.View;
+
 @Entity
 @Table(name="event")
 @NamedQueries(value = { 
-	@NamedQuery(name = "Event.getEventsWithParticipant", 
+	@NamedQuery(name = "Event.getEventDetailed", 
 				query = "select distinct e from Event e " +
-						"left join fetch e.participants p"),
-	@NamedQuery(name = "Event.getEventWithSections", 
-				query = "select distinct e from Event e " +
+						"left join fetch e.participants p " +
 						"left join fetch e.sections s " +
 						"where e.id = :id")
 })
@@ -29,78 +31,93 @@ public class Event {
 	private Set<Section>     sections;
 
 	public Event() {
-		participants = new HashSet<>();
-		sections     = new HashSet<>();
+		this.participants = new HashSet<>();
+		this.sections     = new HashSet<>();
 	}
+	
+	// getter methods
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="idEvent")
+	@JsonView(View.Summary.class)
 	public int getIdEvent() {
 		return idEvent;
 	}
 	
-	public void setIdEvent(int idEvent) {
-		this.idEvent = idEvent;
-	}
-	
 	@Column(name="name")
+	@JsonView(View.Summary.class)
 	public String getName() {
 		return name;
+	}
+	
+	@Column(name="description")
+	@JsonView(View.Detailed.class)
+	public String getDescription() {
+		return description;
+	}
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="date")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm")
+	@JsonView(View.Summary.class)
+	public Date getDate() {
+		return date;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name="idVenue")
+	@JsonView(View.Summary.class)
+	public Venue getVenue() {
+		return venue;
+	}
+
+	@ManyToMany
+	@JoinTable(name = "event_has_participant",
+				joinColumns = @JoinColumn(name = "idEvent"),
+				inverseJoinColumns = @JoinColumn(name = "idParticipant"))	
+	@JsonView(View.Detailed.class)
+	public Set<Participant> getParticipants() {
+		return participants;
+	}
+	
+	@OneToMany(mappedBy="event", cascade=CascadeType.ALL, orphanRemoval=true)
+	@JsonView(View.Detailed.class)
+	public Set<Section> getSections() {
+		return sections;
+	}
+	
+	// setter methods
+	
+	public void setIdEvent(int idEvent) {
+		this.idEvent = idEvent;
 	}
 	
 	public void setName(String name) {
 		this.name = name;
 	}
 	
-	@Column(name="description")
-	public String getDescription() {
-		return description;
-	}
 	public void setDescription(String description) {
 		this.description = description;
 	}
 	
-	@Temporal(TemporalType.DATE)
-	@Column(name="date")
-	public Date getDate() {
-		return date;
-	}
-	
 	public void setDate(Date date) {
 		this.date = date;
-	}
-	
-	@ManyToOne
-	@JoinColumn(name="idVenue")
-	public Venue getVenue() {
-		return venue;
 	}
 
 	public void setVenue(Venue venue) {
 		this.venue = venue;
 	}
 
-	@ManyToMany
-	@JoinTable(name = "event_has_participant",
-				joinColumns = @JoinColumn(name = "idEvent"),
-				inverseJoinColumns = @JoinColumn(name = "idParticipant"))
-	public Set<Participant> getParticipants() {
-		return participants;
-	}
-
 	public void setParticipants(Set<Participant> participants) {
 		this.participants = participants;
-	}
-	
-	@OneToMany(mappedBy="event", cascade=CascadeType.ALL, orphanRemoval=true)
-	public Set<Section> getSections() {
-		return sections;
 	}
 
 	public void setSections(Set<Section> sections) {
 		this.sections = sections;
 	}
+	
+	//
 	
 	@Override
 	public String toString(){

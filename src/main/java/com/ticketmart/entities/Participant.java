@@ -5,6 +5,9 @@ import java.util.Set;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.ticketmart.views.View;
+
 @Entity
 @Table(name = "participant")
 public class Participant {
@@ -22,38 +25,44 @@ public class Participant {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idParticipant")
+	@JsonView(View.Detailed.class)
 	public int getIdParticipant() {
 		return idParticipant;
 	}
 	
-	public void setIdParticipant(int idParticipant) {
-		this.idParticipant = idParticipant;
-	}
-	
 	@Column(name = "name")
+	@JsonView(View.Summary.class)
 	public String getName() {
 		return name;
 	}
 	
-	public void setName(String name) {
-		this.name = name;
-	}
-	
 	@Column(name = "description")
+	@JsonView(View.Detailed.class)
 	public String getDescription() {
 		return description;
-	}
-	
-	public void setDescription(String description) {
-		this.description = description;
 	}
 	
 	@ManyToMany
 	@JoinTable(name = "event_has_participant",
 				joinColumns = @JoinColumn(name = "idParticipant"),
 				inverseJoinColumns = @JoinColumn(name = "idEvent"))
+	@JsonView(View.VeryDetailed.class)
 	public Set<Event> getEvents() {
 		return events;
+	}
+	
+	// setter methods
+	
+	public void setIdParticipant(int idParticipant) {
+		this.idParticipant = idParticipant;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public void setEvents(Set<Event> events) {

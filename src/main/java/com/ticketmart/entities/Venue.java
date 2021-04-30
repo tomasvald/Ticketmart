@@ -1,8 +1,12 @@
 package com.ticketmart.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonView;
+import com.ticketmart.views.View;
 
 @Entity
 @Table(name = "venue")
@@ -16,56 +20,68 @@ public class Venue {
 	
 	private Set<Event> events;
 	
+	public Venue() {
+		this.events = new HashSet<Event>();
+	}
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idVenue")
+	@JsonView(View.Detailed.class)
 	public int getIdVenue() {
 		return idVenue;
 	}
 	
-	public void setIdVenue(int idVenue) {
-		this.idVenue = idVenue;
-	}
-	
 	@Column(name = "name")
+	@JsonView(View.Summary.class)
 	public String getName() {
 		return name;
+	}
+	
+	@Column(name = "address")
+	@JsonView(View.Detailed.class)
+	public String getAddress() {
+		return address;
+	}
+	
+	@Column(name = "city")
+	@JsonView(View.Summary.class)
+	public String getCity() {
+		return city;
+	}
+	
+	@Column(name = "country")
+	@JsonView(View.Detailed.class)
+	public String getCountry() {
+		return country;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="venue", cascade=CascadeType.ALL, orphanRemoval=true)
+	@JsonView(View.VeryDetailed.class)
+	public Set<Event> getEvents() {
+		return events;
+	}
+	
+	// setter methods
+	
+	public void setIdVenue(int idVenue) {
+		this.idVenue = idVenue;
 	}
 	
 	public void setName(String name) {
 		this.name = name;
 	}
 	
-	@Column(name = "address")
-	public String getAddress() {
-		return address;
-	}
-	
 	public void setAddress(String address) {
 		this.address = address;
-	}
-	
-	@Column(name = "city")
-	public String getCity() {
-		return city;
 	}
 	
 	public void setCity(String city) {
 		this.city = city;
 	}
 	
-	@Column(name = "country")
-	public String getCountry() {
-		return country;
-	}
-	
 	public void setCountry(String country) {
 		this.country = country;
-	}
-	
-	@OneToMany(mappedBy="venue", cascade=CascadeType.ALL, orphanRemoval=true)
-	public Set<Event> getEvents() {
-		return events;
 	}
 
 	public void setEvents(Set<Event> events) {

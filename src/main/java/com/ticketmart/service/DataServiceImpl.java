@@ -1,4 +1,4 @@
-package com.ticketmart.db;
+package com.ticketmart.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,19 +10,20 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ticketmart.dao.DbOperationsDao;
 import com.ticketmart.entities.Event;
 import com.ticketmart.entities.Section;
 import com.ticketmart.entities.Status;
 import com.ticketmart.entities.Ticket;
 
 @Transactional
-@Repository("dbOperations")
-public class DbOperations implements DbOperationsDao {
+@Repository("dataService")
+public class DataServiceImpl implements DataService {
 	
-	private static Logger logger = Logger.getLogger(DbOperations.class);
+	private static Logger logger = Logger.getLogger(DataServiceImpl.class);
 	
 	private SessionFactory sessionFactory;
+	
+	// Status methods
 	
 	@Override
 	public Status  getStatus(int idStatus) {
@@ -31,89 +32,90 @@ public class DbOperations implements DbOperationsDao {
 				.setParameter("id", idStatus)
 				.uniqueResult();
 	}
-
+	
+	// Event methods
+	
+	/*
+	 * Returns event with information on venue, participants and section
+	 */
 	@Override
 	public Event getEvent(int idEvent) {
+		logger.info("Querying an event");
 		return (Event) sessionFactory.getCurrentSession()
-				.createQuery("SELECT e FROM Event e WHERE e.idEvent = :id")
+				.getNamedQuery("Event.getEventDetailed")
 				.setParameter("id", idEvent)
 				.uniqueResult();
 	}
 	
-	@Override
-	public Event getEventWithSections(int idEvent) {
-		return (Event) sessionFactory.getCurrentSession()
-				.getNamedQuery("Event.getEventWithSections")
-				.setParameter("id", idEvent)
-				.uniqueResult();
-	}
-	
-	@Override
-	public Section getSection(int idSection) {
-		return (Section) sessionFactory.getCurrentSession()
-				.createQuery("select s from Section where s.idSection = :id")
-				.setParameter("id", idSection)
-				.uniqueResult();
-	}
-	
-	@Override
-	public Section getSectionWithTickets(int idSection) {
-		return (Section) sessionFactory.getCurrentSession()
-				.getNamedQuery("Section.getSectionWithTickets")
-				.setParameter("idSection", idSection)
-				.uniqueResult();
-	}
-	
-	@Override
-	public Section getSectionWithAvailableTickets(int idSection) {
-		return (Section) sessionFactory.getCurrentSession()
-				.getNamedQuery("Section.getSectionWithAvailableTickets")
-				.setParameter("idSection", idSection)
-				.uniqueResult();
-	}
-	
-	// Complex queries
-	
+	/*
+	 * Returns list of events with information about the venue
+	 */
 	@Override
 	@Transactional(readOnly=true)
 	@SuppressWarnings("unchecked")
 	public List<Event> getEvents() {
+		logger.info("Querying all events");
 		return sessionFactory.getCurrentSession()
 				.createQuery("SELECT e FROM Event e")
 				.list();
 	}
 	
+	// Section methods
+	
+	/*
+	 * Return section information, without data about its event or tickets
+	 */
 	@Override
-	@SuppressWarnings("unchecked")
-	public List<Event> getEventsWithParticipant() {
-		return sessionFactory.getCurrentSession()
-				.getNamedQuery("Event.getEventsWithParticipant")
-				.list();
+	public Section getSection(int idSection) {
+		logger.info("Querying a section");
+		return (Section) sessionFactory.getCurrentSession()
+				.createQuery("select s from Section s where s.idSection = :id")
+				.setParameter("id", idSection)
+				.uniqueResult();
 	}
 	
+	// Ticket methods
+
+	/*
+	 * Return list of all tickets assigned to an event section
+	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Ticket> getTickets(int idSection){
+		logger.info("Querying all tickets for a section");
 		return sessionFactory.getCurrentSession()
 				.createQuery("from Ticket where section.idSection = :id")
 				.setParameter("id", idSection)
 				.list();
 	}
 	
-	@Override
-	public List<Ticket> getAvailableTickets(int idSection, int amountOfTickets) {
+	/*
+	 * Return list of all tickets available in an event section
+	 */
+	private List<Ticket> getTicketsAvailable(int idSection) {
+		logger.info("Querying all available tickets for a section");
 		@SuppressWarnings("unchecked")
-		List<Ticket> allTickets = sessionFactory.getCurrentSession()
-				.createQuery("from Ticket where section.idSection = :id and status.idStatus = 1")
+		List<Ticket> ticketsAvailable = sessionFactory.getCurrentSession()
+				.createQuery("from Ticket t where t.section.idSection = :id and t.status.idStatus = 1")
 				.setParameter("id", idSection)
-				.list();
+				.list();	
+		return ticketsAvailable;
+	}
+	
+	/*
+	 * Return list of a specific amount of tickets available for a section
+	 */
+	@Override
+	public List<Ticket> getTicketsAvailable(int idSection, int amountOfTickets) {
+		List<Ticket> ticketsAvailable = getTicketsAvailable(idSection);
 		
-		if(allTickets.size() < amountOfTickets) {
+		if(ticketsAvailable.size() < amountOfTickets) {
 			return new ArrayList<Ticket>();
-		}
-		
-		List<Ticket> available = allTickets.subList(0, amountOfTickets);		
-		return reserveTickets(available);
+		}		
+
+		logger.info("Reserving some tickets");
+		List<Ticket> requested = ticketsAvailable.subList(0, amountOfTickets);		
+		return reserveTickets(requested);
 	}
 	
 	@Override
@@ -129,6 +131,7 @@ public class DbOperations implements DbOperationsDao {
 			ticket.setStatus(reserved);
 			save(ticket);
 		}
+		logger.info(tickets.size() + " tickets reserved");
 		return tickets;
 	}
 
@@ -139,6 +142,7 @@ public class DbOperations implements DbOperationsDao {
 			ticket.setStatus(rollback);
 			save(ticket);
 		}
+		logger.info(tickets.size() + " tickets cancelled");
 		return tickets;
 	}
 
