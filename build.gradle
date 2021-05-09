@@ -27,6 +27,7 @@ ext {
 	servletVersion = '3.0.1'
 	jstlVersion    = '1.2'
 	jacksonVersion = '2.12.1'
+	springfoxVersion = '2.9.2'
 
 	//logging libs
 	log4jVersion   = '1.2.17'
@@ -73,19 +74,6 @@ ext {
 			webflux           : "org.springframework:spring-webflux:$springVersion"
 
 	]
-	
-	jersey = [
-			servlet    : "org.glassfish.jersey.containers:jersey-container-servlet:$jerseyVersion",
-    		server     : "org.glassfish.jersey.core:jersey-server:$jerseyVersion",
-    		hk2        : "org.glassfish.jersey.inject:jersey-hk2:$jerseyVersion"
-	]
-	
-	misc = [
-			javax      : "javax.annotation:javax.annotation-api:$javaxVersion",
-			servlet    : "javax.servlet:javax.servlet-api:$servletVersion",
-			jstl       : "javax.servlet:jstl:$jstlVersion", // to allow use of JSTL tags in JSP files
-			jacksonDb  : "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion" // for JSON HTTP responses
-	]
 
 	hibernate = [
 			validator  : "org.hibernate:hibernate-validator:$hibernateValidatorVersion",
@@ -97,6 +85,21 @@ ext {
 			querydslapt: "com.mysema.querydsl:querydsl-apt:2.7.1",
 			tx         : "com.atomikos:transactions-hibernate4:$atomikosVersion"
 	]
+	
+	jersey = [
+			servlet    : "org.glassfish.jersey.containers:jersey-container-servlet:$jerseyVersion",
+    		server     : "org.glassfish.jersey.core:jersey-server:$jerseyVersion",
+    		hk2        : "org.glassfish.jersey.inject:jersey-hk2:$jerseyVersion"
+	]
+	
+	testing = [
+			junit : "junit:junit:$junitVersion"
+	]
+	
+	misc = [
+			javax      : "javax.annotation:javax.annotation-api:$javaxVersion",
+			jacksonDb  : "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion" // for JSON HTTP responses
+	]
 
 
 	log = [
@@ -107,22 +110,25 @@ ext {
 	
 	db = [
 			mysql : "mysql:mysql-connector-java:$mysqlVersion",
-			h2    : "com.h2database:h2:$h2Version",
+			h2    : "com.h2database:h2:$h2Version"
 	]
 	
-	testing = [
-			junit : "junit:junit:$junitVersion"
+	web = [			
+			servlet    : "javax.servlet:javax.servlet-api:$servletVersion",
+			jstl       : "javax.servlet:jstl:$jstlVersion", // to allow use of JSTL tags in JSP files
+			swagger    : "io.springfox:springfox-swagger2:$springfoxVersion",
+			swaggerUi  : "io.springfox:springfox-swagger-ui:$springfoxVersion"
 	]
 }
 
 dependencies {
-	compile spring.context, spring.jdbc,
-			spring.orm, hibernate.em,
-			spring.webmvc,
-			log.log4j,
-			misc.javax, misc.servlet, misc.jstl, misc.jacksonDb,
+	compile spring.context,
+			spring.jdbc, spring.orm, hibernate.em,
+			spring.webmvc, web.servlet,
 			jersey.servlet, jersey.server, jersey.hk2,
-			db.mysql, db.h2
+			misc.javax, misc.jacksonDb,
+			db.mysql, db.h2,
+			log.log4j
 	testCompile testing.junit
 }
 

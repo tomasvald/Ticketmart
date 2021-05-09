@@ -7,7 +7,7 @@ import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import com.ticketmart.config.DataServiceConfig;
-import com.ticketmart.config.WebConfig;
+import com.ticketmart.config.WebDispatcherConfig;
 
 public class WebInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
@@ -21,7 +21,7 @@ public class WebInitializer extends AbstractAnnotationConfigDispatcherServletIni
 	@Override
 	protected Class<?>[] getServletConfigClasses() {
 		return new Class<?>[]{
-			WebConfig.class
+			WebDispatcherConfig.class
 			};
 	}
 

@@ -6,19 +6,8 @@ import java.util.Set;
 
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.ticketmart.views.View;
-
 @Entity
 @Table(name="event")
-@NamedQueries(value = { 
-	@NamedQuery(name = "Event.getEventDetailed", 
-				query = "select distinct e from Event e " +
-						"left join fetch e.participants p " +
-						"left join fetch e.sections s " +
-						"where e.id = :id")
-})
 public class Event {
 	
 	private int    idEvent;
@@ -40,34 +29,28 @@ public class Event {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="idEvent")
-	@JsonView(View.Summary.class)
 	public int getIdEvent() {
 		return idEvent;
 	}
 	
 	@Column(name="name")
-	@JsonView(View.Summary.class)
 	public String getName() {
 		return name;
 	}
 	
 	@Column(name="description")
-	@JsonView(View.Detailed.class)
 	public String getDescription() {
 		return description;
 	}
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name="date")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm")
-	@JsonView(View.Summary.class)
 	public Date getDate() {
 		return date;
 	}
 	
 	@ManyToOne
 	@JoinColumn(name="idVenue")
-	@JsonView(View.Summary.class)
 	public Venue getVenue() {
 		return venue;
 	}
@@ -75,14 +58,14 @@ public class Event {
 	@ManyToMany
 	@JoinTable(name = "event_has_participant",
 				joinColumns = @JoinColumn(name = "idEvent"),
-				inverseJoinColumns = @JoinColumn(name = "idParticipant"))	
-	@JsonView(View.Detailed.class)
+				inverseJoinColumns = @JoinColumn(name = "idParticipant"))
+	@OrderBy(value = "name")
 	public Set<Participant> getParticipants() {
 		return participants;
 	}
 	
 	@OneToMany(mappedBy="event", cascade=CascadeType.ALL, orphanRemoval=true)
-	@JsonView(View.Detailed.class)
+	@OrderBy(value = "name")
 	public Set<Section> getSections() {
 		return sections;
 	}

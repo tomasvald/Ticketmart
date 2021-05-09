@@ -5,21 +5,20 @@ import java.util.Set;
 
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.ticketmart.views.View;
-
 @Entity
 @Table(name = "venue")
 public class Venue {
 	
 	private int    idVenue;
 	private String name;
+	private String website;
+	private String phone_number;
 	private String address;
 	private String city;
 	private String country;
 	
 	private Set<Event> events;
-	
+
 	public Venue() {
 		this.events = new HashSet<Event>();
 	}
@@ -27,37 +26,41 @@ public class Venue {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idVenue")
-	@JsonView(View.Detailed.class)
 	public int getIdVenue() {
 		return idVenue;
 	}
 	
 	@Column(name = "name")
-	@JsonView(View.Summary.class)
 	public String getName() {
 		return name;
 	}
 	
+	@Column(name = "website")
+	public String getWebsite() {
+		return website;
+	}
+	
+	@Column(name= "phone_number")
+	public String getPhone_number() {
+		return phone_number;
+	}
+	
 	@Column(name = "address")
-	@JsonView(View.Detailed.class)
 	public String getAddress() {
 		return address;
 	}
 	
 	@Column(name = "city")
-	@JsonView(View.Summary.class)
 	public String getCity() {
 		return city;
 	}
 	
 	@Column(name = "country")
-	@JsonView(View.Detailed.class)
 	public String getCountry() {
 		return country;
 	}
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="venue", cascade=CascadeType.ALL, orphanRemoval=true)
-	@JsonView(View.VeryDetailed.class)
 	public Set<Event> getEvents() {
 		return events;
 	}
@@ -70,6 +73,14 @@ public class Venue {
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public void setWebsite(String website) {
+		this.website = website;
+	}
+
+	public void setPhone_number(String phone_number) {
+		this.phone_number = phone_number;
 	}
 	
 	public void setAddress(String address) {
@@ -90,7 +101,8 @@ public class Venue {
 	
 	@Override
 	public String toString() {
-		return "Venue - Name: " + name + " City: " + city + " Country: " + country;
+		return "Venue - idVenue: " + idVenue + "Name: " + name + " City: " + city + 
+				" Country: " + country;
 	}
 
 }

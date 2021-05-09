@@ -2,9 +2,6 @@ package com.ticketmart.entities;
 
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.ticketmart.views.View;
-
 @Entity
 @Table(name="ticket")
 public class Ticket {
@@ -25,27 +22,23 @@ public class Ticket {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="idTicket")
-	@JsonView(View.Summary.class)
 	public int getIdTicket() {
 		return idTicket;
 	}
 	
 	@Column(name="seatNumber")
-	@JsonView(View.Summary.class)
 	public String getSeatNumber() {
 		return seatNumber;
 	}
 
 	@ManyToOne
 	@JoinColumn(name="idStatus")
-	@JsonView(View.Detailed.class)
 	public Status getStatus() {
 		return status;
 	}
 
 	@ManyToOne
 	@JoinColumn(name="idSection")
-	@JsonView(View.Detailed.class)
 	public Section getSection() {
 		return section;
 	}

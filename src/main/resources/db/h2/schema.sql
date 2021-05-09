@@ -16,7 +16,9 @@ CREATE TABLE participant (
 CREATE TABLE venue (
   idVenue        INT          NOT NULL AUTO_INCREMENT,
   name           VARCHAR(45)  NOT NULL,
-  address        VARCHAR(45)  NOT NULL,
+  website        VARCHAR(60)  NULL,
+  phone_number   VARCHAR(50)  NULL,
+  address        VARCHAR(100) NOT NULL,
   city           VARCHAR(45)  NOT NULL,
   country        VARCHAR(45)  NOT NULL,
   CONSTRAINT PK_idVenue         PRIMARY KEY (idVenue)

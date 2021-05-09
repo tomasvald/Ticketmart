@@ -1,19 +1,18 @@
 package com.ticketmart.config;
 
 import java.io.IOException;
-import java.sql.Driver;
 import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+//import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
@@ -27,7 +26,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 public class DataServiceConfig {
 	
-	private static Logger logger = Logger.getLogger(DataServiceConfig.class);
+	//private static Logger logger = Logger.getLogger(DataServiceConfig.class);
 	
 	@Value("${driverClassName}")
 	private String driverClassName;

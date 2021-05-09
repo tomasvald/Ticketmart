@@ -1,0 +1,419 @@
+openapi: 3.0.0
+info:
+  title: Ticketmart API
+  version: 0.1.1
+  description: Ticket sales system that allows users to list upcoming artist events worldwide and purchase tickets on-demand.
+  contact:
+    name: Thom Vald
+servers:
+  - url: 'http://localhost:8080/Ticketmart'
+paths:
+  /tickets:
+    get:
+      operationId: get-tickets
+      summary: Request an amount of available tickets for an event's section
+      description: ''
+      parameters:
+        - in: query
+          name: idSection
+          schema:
+            type: number
+          description: ID of the event's section to purchase from
+          required: true
+        - in: query
+          name: amountOfTickets
+          schema:
+            type: number
+          description: Amount of tickets to purchase
+          required: true
+      tags:
+        - tickets
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketList'
+              example:
+                - idTicket: 23
+                  name: G7
+                - idTicket: 24
+                  name: G8
+        '400':
+          description: Invalid input
+        '404':
+          description: No available tickets were found
+  /events:
+    get:
+      operationId: get-events
+      summary: List all events recorded whithin the system
+      description: ''
+      parameters: []
+      tags:
+      - events
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventList'
+              example:
+                - idEvent: 1
+                  name: Metallica World Tour
+                  date: 16-12-2021 06:00
+                  venue:
+                    idVenue: 1
+                    name: Foro Sol
+                    city: CDMX
+                - idEvent: 2
+                  name: Metallica World Tour
+                  date: 17-12-2021 06:00
+                  venue:
+                    idVenue: 1
+                    name: Foro Sol
+                    city: CDMX
+                - idEvent: 3
+                  name: Therion Lemuria
+                  date: '16-11-2021 06:00'
+                  venue:
+                    idVenue: 1
+                    name: Foro Sol
+                    city: CDMX
+  '/events/{id}':
+    get:
+      operationId: get-events-id
+      summary: Returns information of a specific event
+      description: ''
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Event ID
+      tags:
+        - events
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+              example:
+                idEvent: 2
+                name: Metallica World Tour
+                description: Second day
+                date: 17-12-2021 06:00
+                venue:
+                  idVenue: 1
+                  name: Foro Sol
+                  address: Viaducto Rio de la Piedad S/N, Granjas Mexico
+                  city: CDMX
+                  country: México
+                participants:
+                  - idParticipant: 1
+                    name: Metallica
+                    description: Trash metal band
+                sections:
+                  - idSection: 11
+                    name: PLATINUM A
+                    cost: 100
+                  - idSection: 12
+                    name: PLATINUM B
+                    cost: 110
+                  - idSection: 9
+                    name: SILVER A
+                    cost: 60
+                  - idSection: 8
+                    name: GENERAL B
+                    cost: 50
+                  - idSection: 7
+                    name: GENERAL A
+                    cost: 50
+                  - idSection: 10
+                    name: SILVER B
+                    cost: 70
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Event not found
+  /venues:
+    get:
+      operationId: get-venues
+      summary: Returns a list of all venues recorded in the system
+      description: ''
+      parameters: []
+      tags:
+        - venues
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VenueList'
+              example:
+                - id: 1
+                  name: Foro Sol
+                  city: CDMX
+                  country: Mexico
+                - id: 2
+                  name: Foro Sol
+                  city: CDMX
+                  country: Mexico
+                - id: 3
+                  name: Auditorio Telmex
+                  city: Zapopan, JAL
+                  country: Mexico
+  '/venues/{id}':
+    get:
+      operationId: get-venues-id
+      summary: Returns information of a specific venue
+      description: ''
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Venue ID
+      tags:
+        - venues
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Venue'
+              example:
+                  id: 1
+                  name: Foro Sol
+                  address: Viaducto Rio de la Piedad S/N, Granjas Mexico
+                  phone_number: 5552379999
+                  website: https://forosol.mx/
+                  city: CDMX
+                  country: Mexico
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Event not found
+  /participants:
+    get:
+      operationId: get-participants
+      summary: Returns a list of all event participants recorded in the system
+      description: ''
+      tags:
+        - participants
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParticipantList'
+              example:
+                - id: 1
+                  name: Metallica
+                - id: 2
+                  name: Therion
+                - id: 3
+                  name: Harry Styles
+                - id: 4
+                  name: Billie Eilish
+                - id: 5
+                  name: The Weeknd
+  '/participants/{id}':
+    get:
+      operationId: get-participants-id
+      summary: Returns basic information of a participant and a list of related upcoming events.
+      description: ''
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+          description: Participant ID
+      tags:
+        - participants
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Participant'
+              example:
+                  idParticipant: 2
+                  name: Therion
+                  description: Symphonic metal band
+                  events:
+                    - idEvent: 3
+                      name: Therion Lemuria
+                      date: 16-11-2021 06:00
+                      venue:
+                        idVenue: 1
+                        name: Foro Sol
+                        city: CDMX
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Event not found
+
+components:
+  schemas:
+    TicketList:
+      type: array
+      items:
+        type: object
+        properties:
+          idTicket:
+            type: number
+          seatNumber:
+            type: string
+    Event:
+      type: object
+      properties:
+        idEvent:
+          type: number
+        name:
+          type: string
+        description:
+          type: string
+        date:
+          type: string
+        venue:
+          type: object
+          properties:
+            idVenue:
+              type: number
+            name:
+              type: string
+            address:
+              type: string
+            city:
+              type: string
+            country:
+              type: string
+        participants:
+          type: array
+          items:
+            properties:
+              idParticipant:
+                type: number
+              name:
+                type: string
+              description:
+                type: string
+        sections:
+          type: array
+          items:
+            properties:
+              idSection:
+                type: number
+              name:
+                type: string
+              cost:
+                type: number
+    EventList:
+      type: array
+      items:
+        type: object
+        properties:
+          idEvent:
+            type: number
+          name:
+            type: string
+          date:
+            type: string
+          venue:
+            type: object
+            properties:
+              idVenue:
+                type: number
+              name:
+                type: string
+              city:
+                type: string
+    Venue:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        address:
+          type: string
+        phoneNumber:
+          type: string
+        website:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+    VenueList:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: number
+          name:
+            type: string
+          city:
+            type: string
+          country:
+            type: string
+    Participant:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        description:
+          type: string
+        events:
+          type: array
+          items:
+            properties:
+              idEvent:
+                type: number
+              name:
+                type: string
+              date:
+                type: string
+              venue:
+                type: object
+                properties:
+                  idVenue:
+                    type: number
+                  name:
+                    type: string
+                  city:
+                    type: string
+    ParticipantList:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: number
+          name:
+            type: string
+
+
+tags:
+  - name: tickets
+    description: Operations with tickets, such as request an amount of tickets
+  - name: events
+    description: Operations with events
+  - name: venues
+    description: Operations with venues
+  - name: participants
+    description: Operations with participants of events

@@ -1,12 +1,37 @@
-insert into status(status,description) values ('AVALIABLE','Ticket available for purchase');
+
+insert into status(status,description) values ('AVAILABLE','Ticket available for purchase');
 insert into status(status,description) values ('RESERVED','Ticket on process of being purchased');
 insert into status(status,description) values ('SOLD','Ticket already sold');
 
-insert into participant(name,description) values('Metallica','Trash metal band');
-insert into participant(name,description) values('Therion','Symphonic metal band');
+insert into participant(name,description) values('Metallica', 'American heavy metal band');
+insert into participant(name,description) values('Therion', 'Sweedish symphonic metal band');
+insert into participant(name,description) values('Harry Styles', 'Pop artist');
+insert into participant(name,description) values('Billie Eilish', 'Pop artist');
+insert into participant(name,description) values('The Weeknd', 'Singer');
+insert into participant(name,description) values('Justin Bieber', 'Pop artist');
+insert into participant(name,description) values('Mago de Oz', 'Spanish folk metal band');
+insert into participant(name,description) values('Enanitos Verdes', 'Argentinian rock band');
+insert into participant(name,description) values('5 Seconds Of Summer', 'Australian pop rock band');
 
-insert into venue(name, address, city, country) 
-values('Foro Sol','Viaducto Rio de la Piedad S/N, Granjas Mexico','CDMX','México');
+
+insert into venue(name, website, phone_number, address, city, country) 
+values('Foro Sol','https://forosol.mx/','(55) 5237 9999 ext. 71008','Viaducto Río de la Piedad S/N, Granjas Mexico','CDMX','Mexico');
+insert into venue(name, website, phone_number, address, city, country) 
+values('Foro DiDi','http://www.forodidi.com/','52 (81) 2133 5630','Pabellón Melchor Ocampo #130, Col Centro','Monterrey, NL','Mexico');
+insert into venue(name, website, phone_number, address, city, country) 
+values('Auditorio Telmex','https://www.auditorio-telmex.com/','(33) 3818 3800','Obreros de Cananea #747, Col. Villas de los Belenes','Zapopan, JAL','Mexico');
+insert into venue(name, website, phone_number, address, city, country) 
+values('Auditorio Nacional','http://www.auditorio.com.mx/','(55) 9138-1350','Paseo de la Reforma #50 Col. Polanco, V Sección','CDMX','Mexico');
+insert into venue(name, website, phone_number, address, city, country) 
+values('Estadio Azteca','https://www.estadioazteca.com.mx/','(55) 5487 3100','Calzada de Tlalpan #3665 Col. Santa Úrsula Coapa','CDMX','Mexico');
+insert into venue(name, website, phone_number, address, city, country) 
+values('Auditorio Pabellón M','http://www.auditoriopabellonm.com/','52 (81) 2133 5630','Avenida Constitución S/N, Col. Centro','Monterrey, NL','Mexico');
+insert into venue(name, website, phone_number, address, city, country) 
+values('Arena Monterrey','http://www.arenamonterrey.com/','(81) 15 15 41 00','Av. Francisco I. Madero #2500, Centro','Monterrey, NL','Mexico');
+insert into venue(name, website, phone_number, address, city, country) 
+values('Forum de Mundo Imperial','https://www.forummundoimperial.com/','744.466.33.22','Boulevard de Las Naciones S/N, esq. Boulevard Barra Vieja, Col. Plan de los Amates','Acapulco, GRO','Mexico');
+insert into venue(name, website, phone_number, address, city, country) 
+values('El Domo','http://eldomosanluis.com/','(444) 799 3013','Av. Prol. Francisco Martínez de la Vega #255','San Luis Potosí','Mexico');
 
 insert into event(name,description,date,idVenue) values('Metallica World Tour','First day','2021-12-16',1);
 insert into event(name,description,date,idVenue) values('Metallica World Tour','Second day','2021-12-17',1);
