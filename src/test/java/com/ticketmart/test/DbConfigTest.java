@@ -33,7 +33,7 @@ public class DbConfigTest {
 	
 	@Test
 	// List all events
-	public void test1() {
+	public void testEvents() {
 		List<Event> events = dataService.getEvents();
 		for(Event event : events) {
 			logger.info(event.toString());
@@ -42,7 +42,7 @@ public class DbConfigTest {
 	
 	@Test
 	// Show information of a specific event
-	public void test2() {
+	public void testEvent() {
 		Event event = dataService.getEvent(2);
 		logger.info(event.toString());
 		if(event.getVenue() != null) {
@@ -57,7 +57,7 @@ public class DbConfigTest {
 	
 	// List all tickets for a section
 	@Test
-	public void test3() {
+	public void testTickets() {
 		List<Ticket> tickets = dataService.getTickets(3);
 		if(tickets != null) {
 			for(Ticket ticket : tickets) {
@@ -69,7 +69,7 @@ public class DbConfigTest {
 	// Reserve some tickets for purchase, and then list all section tickets
 	// to verify the tickets were reserved
 	@Test
-	public void test4() {
+	public void testReserveTickets() {
 		List<Ticket> reserved = dataService.getTicketsAvailable(3, 2);
 		logger.info("Reserved tickets");
 		if(reserved.size() > 0) {

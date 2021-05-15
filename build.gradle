@@ -40,7 +40,7 @@ ext {
 
 	//persistency libraries
 	hibernateVersion = '5.2.10.Final'
-	hibernateJpaVersion = '1.0.0.Final'
+	hibernateJpaVersion = '1.0.2.Final'
 	hibernateValidatorVersion = '5.4.1.Final' //6.0.0.Beta2
 	atomikosVersion = '4.0.4'
 
@@ -123,10 +123,11 @@ ext {
 
 dependencies {
 	compile spring.context,
-			spring.jdbc, spring.orm, hibernate.em,
+			spring.jdbc, spring.orm, 
+			hibernate.em, hibernate.jpaApi, 
 			spring.webmvc, web.servlet,
-			jersey.servlet, jersey.server, jersey.hk2,
-			misc.javax, misc.jacksonDb,
+			jersey.servlet, jersey.server, jersey.hk2, 
+			misc.jacksonDb,
 			db.mysql, db.h2,
 			log.log4j
 	testCompile testing.junit

@@ -3,10 +3,10 @@ package com.ticketmart.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.apache.log4j.Logger;
-import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,16 +23,18 @@ public class DataServiceImpl implements DataService {
 	
 	private static Logger logger = Logger.getLogger(DataServiceImpl.class);
 	
-	private SessionFactory sessionFactory;
+	@PersistenceContext
+	private EntityManager em;
 	
 	// ------------- STATUS METHODS
 	
 	@Override
-	public Status  getStatus(int idStatus) {
-		return (Status) sessionFactory.getCurrentSession()
-						.createQuery("from Status s where s.idStatus = :id")
-						.setParameter("id", idStatus)
-						.uniqueResult();
+	@Transactional(readOnly=true)
+	public Status getStatus(int idStatus) {
+		String query = "select distinct s from Status s where s.idStatus = :id";
+		return em.createQuery(query, Status.class)
+				 .setParameter("id", idStatus)
+				 .getSingleResult();
 	}
 	
 	// ------------- EVENT METHODS
@@ -41,15 +43,15 @@ public class DataServiceImpl implements DataService {
 	 * Returns event with information on venue, participants and section
 	 */
 	@Override
+	@Transactional(readOnly=true)
 	public Event getEvent(int idEvent) {
-		//logger.info("Querying an event");
-		return (Event) sessionFactory.getCurrentSession()
-						.createQuery("select distinct e from Event e " +
-										"left join fetch e.participants p " +
-										"left join fetch e.sections s " +
-										"where e.id = :id")
-						.setParameter("id", idEvent)
-						.uniqueResult();
+		String query = "select distinct e from Event e " +
+						"left join fetch e.participants p " +
+						"left join fetch e.sections s " +
+						"where e.id = :id";
+		return em.createQuery(query, Event.class)
+				 .setParameter("id", idEvent)
+				 .getSingleResult();
 	}
 	
 	/*
@@ -57,51 +59,51 @@ public class DataServiceImpl implements DataService {
 	 */
 	@Override
 	@Transactional(readOnly=true)
-	@SuppressWarnings("unchecked")
 	public List<Event> getEvents() {
-		//logger.info("Querying all events");
-		return sessionFactory.getCurrentSession()
-				.createQuery("from Event e")
-				.list();
+		String query = "select e from Event e";
+		return em.createQuery(query, Event.class)
+				 .getResultList();
 	}
 	
 	// ------------- VENUE METHDOS
 	
 	@Override
+	@Transactional(readOnly=true)
 	public Venue getVenue(int idVenue) {
-		return (Venue) sessionFactory.getCurrentSession()
-						.createQuery("select v from Venue v where v.idVenue = :id")
-						.setParameter("id", idVenue)
-						.uniqueResult();
+		String query = "select distinct v from Venue v where v.idVenue = :id";
+		return em.createNamedQuery(query, Venue.class)
+				 .setParameter("id", idVenue)
+				 .getSingleResult();
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
+	@Transactional(readOnly=true)
 	public List<Venue> getVenues() {
-		return sessionFactory.getCurrentSession()
-				.createQuery("from Venue v")
-				.list();
+		String query = "select v from Venue v";
+		return em.createQuery(query, Venue.class)
+				 .getResultList();
 	}
 	
 	// ------------- PARTICIPANTS METHODS
 	
 	@Override
+	@Transactional(readOnly=true)
 	public Participant getParticipant(int idParticipant) {
-		return (Participant) sessionFactory.getCurrentSession()
-							.createQuery("select distinct p from Participant p " +
-											"left join fetch p.events e " +
-											"where p.idParticipant = :id ")
-							.setParameter("id", idParticipant)
-							.uniqueResult();
+		String query = "select distinct p from Participant p " +
+						"left join fetch p.events e " +
+						"where p.idParticipant = :id ";
+		return em.createNamedQuery(query, Participant.class)
+				 .setParameter("id", idParticipant)
+				 .getSingleResult();
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
+	@Transactional(readOnly=true)
 	public List<Participant> getParticipants(){
-		return sessionFactory.getCurrentSession()
-				.createQuery("select p from Participant p " +
-								"order by p.name")
-				.list();
+		String query = "select p from Participant p " +
+						"order by p.name";
+		return em.createNamedQuery(query, Participant.class)
+				 .getResultList();
 	}
 	
 	// ------------- SECTION METHODS
@@ -110,12 +112,12 @@ public class DataServiceImpl implements DataService {
 	 * Return section information, without data about its event or tickets
 	 */
 	@Override
+	@Transactional(readOnly=true)
 	public Section getSection(int idSection) {
-		//logger.info("Querying a section");
-		return (Section) sessionFactory.getCurrentSession()
-				.createQuery("from Section s where s.idSection = :id")
-				.setParameter("id", idSection)
-				.uniqueResult();
+		String query = "from Section s where s.idSection = :id";
+		return em.createQuery(query, Section.class)
+				 .setParameter("id", idSection)
+				 .getSingleResult();
 	}
 	
 	// ------------- TICKET METHODS
@@ -124,13 +126,12 @@ public class DataServiceImpl implements DataService {
 	 * Return list of all tickets assigned to an event section
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
+	@Transactional(readOnly=true)
 	public List<Ticket> getTickets(int idSection){
-		//logger.info("Querying all tickets for a section");
-		return sessionFactory.getCurrentSession()
-				.createQuery("from Ticket where section.idSection = :id")
-				.setParameter("id", idSection)
-				.list();
+		String query = "from Ticket where section.idSection = :id";
+		return em.createQuery(query, Ticket.class)
+				 .setParameter("id", idSection)
+				 .getResultList();
 	}
 	
 	/*
@@ -138,13 +139,13 @@ public class DataServiceImpl implements DataService {
 	 */
 	private List<Ticket> getTicketsAvailable(int idSection) {
 		logger.info("Querying all available tickets for a section");
-		@SuppressWarnings("unchecked")
-		List<Ticket> ticketsAvailable = sessionFactory.getCurrentSession()
-				.createQuery("from Ticket t "
-							+ "where t.section.idSection = :id "
-							+ "and t.status.idStatus = 1")
+		String query = "from Ticket t " +
+						"where t.section.idSection = :id " +
+						"and t.status.idStatus = 1";
+		List<Ticket> ticketsAvailable = 
+				em.createQuery(query, Ticket.class)
 				.setParameter("id", idSection)
-				.list();	
+				.getResultList();
 		return ticketsAvailable;
 	}
 	
@@ -152,7 +153,7 @@ public class DataServiceImpl implements DataService {
 	 * Return list of a specific amount of tickets available for a section
 	 */
 	@Override
-	public List<Ticket> getTicketsAvailable(int idSection, int amountOfTickets) {
+	public synchronized List<Ticket> getTicketsAvailable(int idSection, int amountOfTickets) {
 		List<Ticket> ticketsAvailable = getTicketsAvailable(idSection);
 		
 		if(ticketsAvailable.size() < amountOfTickets) {
@@ -166,7 +167,7 @@ public class DataServiceImpl implements DataService {
 	
 	@Override
 	public Ticket save(Ticket ticket) {
-		sessionFactory.getCurrentSession().saveOrUpdate(ticket);
+		em.merge(ticket);
 		logger.info("Ticket saved - idTicket: " + ticket.getIdTicket());
 		return ticket;
 	}
@@ -200,17 +201,6 @@ public class DataServiceImpl implements DataService {
 			save(ticket);
 		}
 		return tickets;
-	}	
-	
-	// setter methods for DI injection with Spring
-
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-	
-	@Resource(name="sessionFactory")
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
 	}
 
 }

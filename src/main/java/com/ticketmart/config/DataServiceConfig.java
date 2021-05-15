@@ -3,10 +3,10 @@ package com.ticketmart.config;
 import java.io.IOException;
 import java.util.Properties;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 //import org.apache.log4j.Logger;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -15,8 +15,10 @@ import org.springframework.context.annotation.PropertySource;
 //import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -77,18 +79,24 @@ public class DataServiceConfig {
 	}
 	
 	@Bean
-	public SessionFactory sessionFactory() throws IOException {
-		LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
-		sessionFactoryBean.setDataSource(dataSource());
-		sessionFactoryBean.setPackagesToScan("com.ticketmart.entities");
-		sessionFactoryBean.setHibernateProperties(hibernateProperties());
-		sessionFactoryBean.afterPropertiesSet();
-		return sessionFactoryBean.getObject();
+	public JpaVendorAdapter jpaVendorAdapter() {
+		return new HibernateJpaVendorAdapter();
+	}
+	
+	@Bean
+	public EntityManagerFactory entityManagerFactory() {
+		LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
+		factoryBean.setDataSource(dataSource());
+		factoryBean.setPackagesToScan("com.ticketmart.entities");
+		factoryBean.setJpaProperties(hibernateProperties());
+		factoryBean.setJpaVendorAdapter(jpaVendorAdapter());
+		factoryBean.afterPropertiesSet();
+		return factoryBean.getNativeEntityManagerFactory();		
 	}
 	
 	@Bean
 	public PlatformTransactionManager transactionManager() throws IOException {
-		return new HibernateTransactionManager(sessionFactory());
+		return new JpaTransactionManager(entityManagerFactory());
 	}
 	
 }
