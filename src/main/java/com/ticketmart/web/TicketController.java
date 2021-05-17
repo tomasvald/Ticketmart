@@ -1,5 +1,7 @@
 package com.ticketmart.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,14 +13,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.ticketmart.service.DataService;
+import com.ticketmart.entities.Ticket;
+import com.ticketmart.service.TicketService;
 import com.ticketmart.views.TicketListSerializer;
 
 @RequestMapping("/tickets")
 @Controller
 public class TicketController {
 	
-	private DataService dataService;
+	@Autowired
+	private TicketService ticketService;
 	
 	// objects for JSON serialization
 	private ObjectMapper ticketListMapper;
@@ -35,17 +39,10 @@ public class TicketController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, produces="application/json")
-	public ResponseEntity<String> getTickets(@RequestParam int idSection, @RequestParam int amountOfTickets) throws JsonProcessingException {		
+	public ResponseEntity<String> getTickets(@RequestParam Long idSection, @RequestParam int amountOfTickets) throws JsonProcessingException {
+		List<Ticket> tickets = ticketService.findAvailableAndPurchase(idSection, amountOfTickets);
 		return ResponseEntity.status(HttpStatus.OK)
-				 			 .body(ticketListMapper.writeValueAsString(
-				 					 dataService.getTicketsAvailable(idSection, amountOfTickets)));
-	}
-	
-	// ------------------------------------------------
-	
-	@Autowired
-	public void setDataService(DataService dataService) {
-		this.dataService = dataService;
+				 			 .body(ticketListMapper.writeValueAsString(tickets));
 	}
 
 }

@@ -7,9 +7,13 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "participant")
+@NamedEntityGraph(name = "Participant.detail",
+attributeNodes = {
+	@NamedAttributeNode("events")
+})
 public class Participant {
 	
-	private int idParticipant;
+	private Long   idParticipant;
 	private String name;
 	private String description;
 	
@@ -22,7 +26,7 @@ public class Participant {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idParticipant")
-	public int getIdParticipant() {
+	public Long getIdParticipant() {
 		return idParticipant;
 	}
 	
@@ -47,7 +51,7 @@ public class Participant {
 	
 	// setter methods
 	
-	public void setIdParticipant(int idParticipant) {
+	public void setIdParticipant(Long idParticipant) {
 		this.idParticipant = idParticipant;
 	}
 	

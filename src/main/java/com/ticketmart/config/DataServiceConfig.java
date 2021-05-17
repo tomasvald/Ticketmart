@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 //import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -23,9 +24,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
+@EnableTransactionManagement
 @PropertySource("classpath:db/jdbc.properties")
 @ComponentScan(basePackages = "com.ticketmart.service")
-@EnableTransactionManagement
+@EnableJpaRepositories(basePackages = "com.ticketmart.repos")
 public class DataServiceConfig {
 	
 	//private static Logger logger = Logger.getLogger(DataServiceConfig.class);

@@ -15,7 +15,11 @@ import com.ticketmart.config.DataServiceConfig;
 import com.ticketmart.entities.Event;
 import com.ticketmart.entities.Participant;
 import com.ticketmart.entities.Venue;
-import com.ticketmart.service.DataService;
+import com.ticketmart.service.EventService;
+import com.ticketmart.service.ParticipantService;
+import com.ticketmart.service.StatusService;
+import com.ticketmart.service.TicketService;
+import com.ticketmart.service.VenueService;
 import com.ticketmart.views.EventListSerializer;
 import com.ticketmart.views.EventSerializer;
 import com.ticketmart.views.ParticipantListSerializer;
@@ -26,7 +30,11 @@ import com.ticketmart.views.VenueSerializer;
 public class JsonSerializationTest {
 	
 	GenericApplicationContext ctx;
-	DataService dataService;
+	EventService eventService;
+	VenueService venueService;
+	ParticipantService participantService;
+	StatusService statusService;
+	TicketService ticketService;
 	
 	ObjectMapper mapper;
 	SimpleModule module;
@@ -35,12 +43,20 @@ public class JsonSerializationTest {
 	public void setUp() {
 		
 		ctx = new AnnotationConfigApplicationContext(DataServiceConfig.class);
-		dataService = ctx.getBean("dataService", DataService.class);
+		eventService = ctx.getBean("eventService", EventService.class);
+		venueService = ctx.getBean("venueService", VenueService.class);
+		participantService = ctx.getBean("participantService", ParticipantService.class);
+		statusService = ctx.getBean("statusService", StatusService.class);
+		ticketService = ctx.getBean("ticketService", TicketService.class);
 		
 		mapper = new ObjectMapper();
 		module = new SimpleModule();
 		
-		assertNotNull(dataService);
+		assertNotNull(eventService);
+		assertNotNull(venueService);
+		assertNotNull(participantService);
+		assertNotNull(statusService);
+		assertNotNull(ticketService);
 	}
 	
 	@After
@@ -59,7 +75,7 @@ public class JsonSerializationTest {
 		System.out.println("Requesting an event");
 		System.out.println(mapper
 				.writerWithDefaultPrettyPrinter()
-				.writeValueAsString(dataService.getEvent(2)));	
+				.writeValueAsString(eventService.findById(2l)));	
 	}
 	
 	@Test
@@ -73,7 +89,7 @@ public class JsonSerializationTest {
 		System.out.println("Requesting all events");
 		System.out.println(mapper
 				.writerWithDefaultPrettyPrinter()
-				.writeValueAsString(dataService.getEvents()));	
+				.writeValueAsString(eventService.findAll()));	
 	}
 	
 	@Test
@@ -87,7 +103,7 @@ public class JsonSerializationTest {
 		System.out.println("Requesting a participant");
 		System.out.println(mapper
 				.writerWithDefaultPrettyPrinter()
-				.writeValueAsString(dataService.getParticipant(3)));		
+				.writeValueAsString(participantService.findById(3l)));		
 		
 	}
 
@@ -102,7 +118,7 @@ public class JsonSerializationTest {
 		System.out.println("Requesting all participants");
 		System.out.println(mapper
 				.writerWithDefaultPrettyPrinter()
-				.writeValueAsString(dataService.getParticipants()));		
+				.writeValueAsString(participantService.findAll()));		
 		
 	}
 	
@@ -117,7 +133,7 @@ public class JsonSerializationTest {
 		System.out.println("Requesting a venue");
 		System.out.println(mapper
 				.writerWithDefaultPrettyPrinter()
-				.writeValueAsString(dataService.getVenue(5)));		
+				.writeValueAsString(venueService.findById(5l)));		
 		
 	}
 
@@ -132,7 +148,7 @@ public class JsonSerializationTest {
 		System.out.println("Requesting all venues");
 		System.out.println(mapper
 				.writerWithDefaultPrettyPrinter()
-				.writeValueAsString(dataService.getVenues()));		
+				.writeValueAsString(venueService.findAll()));		
 		
 	}
 

@@ -6,22 +6,22 @@ import javax.persistence.*;
 @Table(name = "status")
 public class Status {
 	
-	public static final int AVAILABLE = 1;
-	public static final int RESERVED  = 2;
-	public static final int SOLD      = 3;
+	public static final Long AVAILABLE = 1l;
+	public static final Long RESERVED  = 2l;
+	public static final Long SOLD      = 3l;
 	
-	private int idStatus;
+	private Long idStatus;
 	private String status;
 	private String description;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idStatus")
-	public int getIdStatus() {
+	public Long getIdStatus() {
 		return idStatus;
 	}
 	
-	public void setIdStatus(int idStatus) {
+	public void setIdStatus(Long idStatus) {
 		this.idStatus = idStatus;
 	}
 	

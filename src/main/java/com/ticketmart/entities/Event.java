@@ -8,9 +8,14 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="event")
+@NamedEntityGraph(name = "Event.detail",
+	attributeNodes = {
+		@NamedAttributeNode("participants"),
+		@NamedAttributeNode("sections")	
+	})
 public class Event {
 	
-	private int    idEvent;
+	private Long   idEvent;
 	private String name;
 	private String description;
 	private Date   date;
@@ -29,7 +34,7 @@ public class Event {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="idEvent")
-	public int getIdEvent() {
+	public Long getIdEvent() {
 		return idEvent;
 	}
 	
@@ -72,7 +77,7 @@ public class Event {
 	
 	// setter methods
 	
-	public void setIdEvent(int idEvent) {
+	public void setIdEvent(Long idEvent) {
 		this.idEvent = idEvent;
 	}
 	

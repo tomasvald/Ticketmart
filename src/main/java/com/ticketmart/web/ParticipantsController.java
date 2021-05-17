@@ -1,5 +1,7 @@
 package com.ticketmart.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.ticketmart.entities.Participant;
-import com.ticketmart.service.DataService;
+import com.ticketmart.service.ParticipantService;
 import com.ticketmart.views.ParticipantListSerializer;
 import com.ticketmart.views.ParticipantSerializer;
 
@@ -20,7 +22,8 @@ import com.ticketmart.views.ParticipantSerializer;
 @Controller
 public class ParticipantsController {
 	
-	private DataService dataService;
+	@Autowired
+	private ParticipantService participantService;
 	
 	// objects for JSON serialization
 	private ObjectMapper participantMapper;
@@ -49,25 +52,20 @@ public class ParticipantsController {
 	
 	@RequestMapping(method = RequestMethod.GET, produces="application/json")
 	public ResponseEntity<String> getParticipants() throws JsonProcessingException{
+		List<Participant> participants = participantService.findAll();		
 		return ResponseEntity.status(HttpStatus.OK)
-							 .body(participantListMapper.writeValueAsString(dataService.getParticipants()));
+							 .body(participantListMapper.writeValueAsString(participants));
 	}
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces="application/json")
-	public ResponseEntity<String> getParticipant(@PathVariable int id) throws JsonProcessingException {
-		Participant participant = dataService.getParticipant(id);
+	public ResponseEntity<String> getParticipant(@PathVariable Long id) throws JsonProcessingException {
+		Participant participant = participantService.findById(id);
+		
 		if(participant == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
 		
 		return ResponseEntity.status(HttpStatus.OK).body(participantMapper.writeValueAsString(participant));
-	}
-	
-	// ------------------------------------------------
-	
-	@Autowired
-	public void setDataService(DataService dataService) {
-		this.dataService = dataService;
 	}
 
 }

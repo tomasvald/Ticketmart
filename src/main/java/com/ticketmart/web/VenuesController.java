@@ -1,5 +1,7 @@
 package com.ticketmart.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.ticketmart.entities.Venue;
-import com.ticketmart.service.DataService;
+import com.ticketmart.service.VenueService;
 import com.ticketmart.views.VenueListSerializer;
 import com.ticketmart.views.VenueSerializer;
 
@@ -20,7 +22,8 @@ import com.ticketmart.views.VenueSerializer;
 @Controller
 public class VenuesController {
 	
-	private DataService dataService;
+	@Autowired
+	private VenueService venueService;
 	
 	// objects for JSON serialization
 	private ObjectMapper venueMapper;
@@ -49,25 +52,20 @@ public class VenuesController {
 	
 	@RequestMapping(method = RequestMethod.GET, produces="application/json")
 	public ResponseEntity<String> getVenues() throws JsonProcessingException{
+		List<Venue> venues = venueService.findAll();
 		return ResponseEntity.status(HttpStatus.OK)
-							 .body(venueListMapper.writeValueAsString(dataService.getVenues()));
+							 .body(venueListMapper.writeValueAsString(venues));
 	}
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces="application/json")
-	public ResponseEntity<String> getVenue(@PathVariable int id) throws JsonProcessingException {
-		Venue venue = dataService.getVenue(id);
+	public ResponseEntity<String> getVenue(@PathVariable Long id) throws JsonProcessingException {
+		Venue venue = venueService.findById(id);
+		
 		if(venue == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(venueMapper.writeValueAsString(null));
 		}
 		
 		return ResponseEntity.status(HttpStatus.OK).body(venueMapper.writeValueAsString(venue));
-	}
-	
-	// ------------------------------------------------
-	
-	@Autowired
-	public void setDataService(DataService dataService) {
-		this.dataService = dataService;
 	}
 
 }

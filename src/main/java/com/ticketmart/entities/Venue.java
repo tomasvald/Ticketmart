@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Table(name = "venue")
 public class Venue {
 	
-	private int    idVenue;
+	private Long   idVenue;
 	private String name;
 	private String website;
 	private String phone_number;
@@ -26,7 +26,7 @@ public class Venue {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idVenue")
-	public int getIdVenue() {
+	public Long getIdVenue() {
 		return idVenue;
 	}
 	
@@ -67,7 +67,7 @@ public class Venue {
 	
 	// setter methods
 	
-	public void setIdVenue(int idVenue) {
+	public void setIdVenue(Long idVenue) {
 		this.idVenue = idVenue;
 	}
 	
@@ -101,7 +101,7 @@ public class Venue {
 	
 	@Override
 	public String toString() {
-		return "Venue - idVenue: " + idVenue + "Name: " + name + " City: " + city + 
+		return "Venue - idVenue: " + idVenue + " Name: " + name + " City: " + city + 
 				" Country: " + country;
 	}
 

@@ -1,5 +1,7 @@
 package com.ticketmart.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.ticketmart.entities.Event;
-import com.ticketmart.service.DataService;
+import com.ticketmart.service.EventService;
 import com.ticketmart.views.EventListSerializer;
 import com.ticketmart.views.EventSerializer;
 
@@ -20,7 +22,8 @@ import com.ticketmart.views.EventSerializer;
 @Controller
 public class EventController {
 	
-	private DataService dataService;
+	@Autowired
+	private EventService eventService;
 	
 	// objects for JSON serialization
 	private ObjectMapper eventMapper;
@@ -49,13 +52,14 @@ public class EventController {
 	
 	@RequestMapping(method=RequestMethod.GET, produces="application/json")
 	public ResponseEntity<String> getEvents() throws JsonProcessingException {
+		List<Event> events = eventService.findAll();		
 		return ResponseEntity.status(HttpStatus.OK)
-							 .body(eventListMapper.writeValueAsString(dataService.getEvents()));
+							 .body(eventListMapper.writeValueAsString(events));
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET, produces="application/json")
-	public ResponseEntity<String> getEvent(@PathVariable int id) throws JsonProcessingException {
-		Event event = dataService.getEvent(id);
+	public ResponseEntity<String> getEvent(@PathVariable Long id) throws JsonProcessingException {
+		Event event = eventService.findById(id);
 		
 		if(event == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(eventMapper.writeValueAsString(null));
@@ -63,12 +67,4 @@ public class EventController {
 		
 		return ResponseEntity.status(HttpStatus.OK).body(eventMapper.writeValueAsString(event));
 	}
-	
-	// ------------------------------------------------
-	
-	@Autowired
-	public void setDataService(DataService dataService) {
-		this.dataService = dataService;
-	}
-
 }

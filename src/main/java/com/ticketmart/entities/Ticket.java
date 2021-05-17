@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Table(name="ticket")
 public class Ticket {
 	
-	private int idTicket;
+	private Long idTicket;
 	private String seatNumber;
 	
 	private Status status;
@@ -22,7 +22,7 @@ public class Ticket {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="idTicket")
-	public int getIdTicket() {
+	public Long getIdTicket() {
 		return idTicket;
 	}
 	
@@ -45,7 +45,7 @@ public class Ticket {
 	
 	// setter methods
 	
-	public void setIdTicket(int idTicket) {
+	public void setIdTicket(Long idTicket) {
 		this.idTicket = idTicket;
 	}
 	

@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Table(name="section")
 public class Section {
 	
-	private int    idSection;
+	private Long   idSection;
 	private String name;
 	private int    totalCapacity;
 	private float  cost;
@@ -26,7 +26,7 @@ public class Section {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="idSection")
-	public int getIdSection() {
+	public Long getIdSection() {
 		return idSection;
 	}
 	
@@ -58,7 +58,7 @@ public class Section {
 	
 	// setter methods
 	
-	public void setIdSection(int idSection) {
+	public void setIdSection(Long idSection) {
 		this.idSection = idSection;
 	}
 	

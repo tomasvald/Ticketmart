@@ -12,7 +12,7 @@ repositories {
 ext {
 	//spring libs
 	springVersion = '5.1.2.RELEASE'
-	springDataVersion = '2.0.11.RELEASE'
+	springDataVersion = '2.3.0.RELEASE'
 	springAmqpVersion = '2.1.0.RELEASE'
 	springSecurityVersion = '5.1.2.RELEASE'
 	springBatchVersion = '4.0.0.RELEASE'
@@ -122,9 +122,10 @@ ext {
 }
 
 dependencies {
-	compile spring.context,
+	compile spring.context, spring.tx, 
 			spring.jdbc, spring.orm, 
 			hibernate.em, hibernate.jpaApi, 
+			spring.data, 
 			spring.webmvc, web.servlet,
 			jersey.servlet, jersey.server, jersey.hk2, 
 			misc.jacksonDb,

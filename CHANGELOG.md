@@ -3,13 +3,33 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). 
+
+## [0.3.0] 2021.05.17
+
+### Added
+
+- Use of Spring Data JPA
+- Several repository and service classes for data service operations
+- Test methods for the repository classes
+- @NamedEntityGraph annotations on entity classes for eager fetch
+
+### Changed
+
+- ID data type of entity classes changed from Integer to Long
+- Web controllers code to use the new service classes
+
+### Removed
+
+- DataService and DataServiceImpl classes
+- Old DataService test class
 
 ## [0.2.1] 2021.05.15
 
 ### Changed
 
 - From Hibernate to JPA with Hibernate
+- Modified the API welcome page to reference a link to the API definition
 
 ## [0.2.0] 2021.05.09
 
@@ -24,8 +44,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Database table definitions to offer a more complete information of events, venues and participants
-- Ticket request parameters. Change the request body for usage of query parameters instead to follow good API development practices
+- Ticket request parameters. Changed the request body for usage of query parameters instead to follow good API development practices
 - Hibernate queries from class entities to the data service class
+- API website landing page with an external link to the API definition
 
 ### Removed
 
